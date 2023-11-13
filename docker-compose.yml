@@ -10,6 +10,8 @@ services:
       - ./api:/usr/src/app
     ports:
       - "3000:3000"
+    links:
+      - redis
     networks:
       rand-network:
         aliases:

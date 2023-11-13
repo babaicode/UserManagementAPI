@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { GqlThrottlerGuard } from './guards/GqlThrottlerGuard';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -27,6 +28,12 @@ import { GqlThrottlerGuard } from './guards/GqlThrottlerGuard';
         limit: 3,
       },
     ]),
+    CacheModule.register({
+      ttl: 60,
+      max: 1000,
+      isGlobal: true,
+      store: 'redis',
+    }),
   ],
   providers: [
     AppService,
