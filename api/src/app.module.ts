@@ -10,6 +10,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { GqlThrottlerGuard } from './guards/GqlThrottlerGuard';
 import { CacheModule } from '@nestjs/cache-manager';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
@@ -35,6 +36,9 @@ import { CacheModule } from '@nestjs/cache-manager';
       store: 'redis',
     }),
     AuthModule,
+    MongooseModule.forRoot(
+      `mongodb://admin:root@mongodb:27017/shop?serverSelectionTimeoutMS=2000&authSource=admin`,
+    ),
   ],
   providers: [
     AppService,
