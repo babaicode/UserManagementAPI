@@ -7,12 +7,18 @@ export class UserService {
     {
       id: 1,
       email: 'john@mail.com',
+      userName: 'John',
       password: 'pas1',
+      twoFactorAuthenticationSecret: null,
+      isTwoFactorAuthenticationEnabled: false,
     },
     {
       id: 2,
       email: 'maria@mail.com',
+      userName: 'Maria',
       password: 'pas2',
+      twoFactorAuthenticationSecret: null,
+      isTwoFactorAuthenticationEnabled: false,
     },
   ];
 
@@ -31,5 +37,15 @@ export class UserService {
 
   async getAllUsers(): Promise<User[]> {
     return this.users;
+  }
+
+  async setTwoFactorAuthenticationSecret(secret: string, id: number) {
+    this.users.find((user) => user.id === id).twoFactorAuthenticationSecret =
+      secret;
+  }
+
+  async turnOnTwoFactorAuthentication(id: number) {
+    this.users.find((user) => user.id === id).isTwoFactorAuthenticationEnabled =
+      true;
   }
 }

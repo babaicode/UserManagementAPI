@@ -29,11 +29,12 @@ import { CacheModule } from '@nestjs/cache-manager';
       },
     ]),
     CacheModule.register({
-      ttl: 60,
+      ttl: 100000,
       max: 1000,
       isGlobal: true,
       store: 'redis',
     }),
+    AuthModule,
   ],
   providers: [
     AppService,

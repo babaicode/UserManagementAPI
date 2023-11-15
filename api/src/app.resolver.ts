@@ -1,11 +1,15 @@
-import { Query, Resolver } from '@nestjs/graphql';
-import { AppService } from './app.service';
+import { Args, Float, Query, Resolver } from '@nestjs/graphql';
+import { AuthService } from './auth/auth.service';
+import { CacheResponse } from './cache.entity';
 
 @Resolver()
 export class AppResolver {
-  constructor(private readonly appService: AppService) {}
-  @Query(() => [String])
-  async getCacheKeys(): Promise<string[]> {
-    return this.appService.getCacheKeys();
+  constructor(private readonly authService: AuthService) {}
+
+  @Query(() => [CacheResponse])
+  async getUserCacheKeys(
+    @Args('id', { type: () => Float }) id: number,
+  ): Promise<CacheResponse[]> {
+    return this.authService.getUserCacheKeys(id);
   }
 }

@@ -36,6 +36,7 @@ describe('Auth Resolver Tests', () => {
     it('should throw an error if password is less than 4 characters', async () => {
       const loginInput = {
         email: 'john@mail.com',
+        userName: 'John',
         password: '123',
       };
 
@@ -53,6 +54,7 @@ describe('Auth Resolver Tests', () => {
         try {
           await authResolver.login({
             email: 'john@mail.com',
+            userName: 'John',
             password: 'pas1',
           });
         } catch (error) {
@@ -66,6 +68,7 @@ describe('Auth Resolver Tests', () => {
     for (let i = 0; i < 1; i++) {
       await authResolver.login({
         email: 'john@mail.com',
+        userName: 'John',
         password: 'pas1',
       });
     }

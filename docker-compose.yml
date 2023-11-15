@@ -13,9 +13,7 @@ services:
     links:
       - redis
     networks:
-      rand-network:
-        aliases:
-          - api
+      - rand-network
 
   redis:
     image: redis:6.2.4-alpine

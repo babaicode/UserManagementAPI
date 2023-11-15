@@ -8,6 +8,15 @@ export class User {
   @Field()
   email: string;
 
+  @Field()
+  userName: string;
+
+  @HideField()
+  twoFactorAuthenticationSecret?: string;
+
+  @HideField()
+  isTwoFactorAuthenticationEnabled: boolean = false;
+
   @HideField()
   password: string;
 }

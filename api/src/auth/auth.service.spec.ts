@@ -3,6 +3,7 @@ import { NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
+import { CACHE_MANAGER, CacheModule } from '@nestjs/cache-manager';
 
 const userServiceMock = {
   findUserByEmail: jest.fn(),
@@ -12,11 +13,17 @@ const jwtServiceMock = {
   sign: jest.fn(),
 };
 
+const cacheManagerMock = {
+  get: jest.fn(),
+  set: jest.fn(),
+};
+
 describe('Auth Service Tests', () => {
   let authService: AuthService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [CacheModule.register()],
       providers: [
         AuthService,
         {
@@ -27,6 +34,7 @@ describe('Auth Service Tests', () => {
           provide: JwtService,
           useValue: jwtServiceMock,
         },
+        { provide: CACHE_MANAGER, useValue: cacheManagerMock },
       ],
     }).compile();
 
@@ -38,10 +46,12 @@ describe('Auth Service Tests', () => {
       const mockUser = {
         id: 1,
         email: 'test@example.com',
+        userName: 'test',
         password: 'password123',
       };
 
       userServiceMock.findUserByEmail.mockResolvedValue(mockUser);
+      cacheManagerMock.get.mockResolvedValue(null);
 
       const result = await authService.validateCredentials(
         'test@example.com',
@@ -50,6 +60,7 @@ describe('Auth Service Tests', () => {
       expect(result).toEqual({
         id: 1,
         email: 'test@example.com',
+        userName: 'test',
       });
     });
 
@@ -98,6 +109,7 @@ describe('Auth Service Tests', () => {
 
       const result = await authService.signIn({
         email: 'test@example.com',
+        userName: 'test',
         password: 'password123',
       });
 
@@ -116,6 +128,7 @@ describe('Auth Service Tests', () => {
       try {
         await authService.signIn({
           email: 'nonexistent@example.com',
+          userName: 'nonexistent',
           password: 'wrongpassword',
         });
       } catch (error) {

@@ -1,28 +1,34 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { User } from 'src/user/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { LoginInput } from './dto/login-input';
 import { UserService } from 'src/user/user.service';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
   async validateCredentials(
     email: string,
     password: string,
-  ): Promise<Omit<User, 'password'> | null> {
+  ): Promise<Omit<User, 'password' | 'userName'> | null> {
     const user = await this.userService.findUserByEmail(email);
 
     if (!user) throw new NotFoundException(`User does not exist.`);
 
-    const valid = true ? password == user?.password : false;
+    const valid = password === user.password;
 
     if (user && valid) {
       const { password, ...result } = user;
+
+      await this.cacheManager.set(`user:${user.id}:loginTime`, Date.now());
+
       return result;
     }
     return null;
@@ -47,5 +53,23 @@ export class AuthService {
       user,
     };
     return result;
+  }
+
+  async getUserCacheKeys(
+    id: number,
+  ): Promise<{ id: number; loginTime: string }[]> {
+    const userCacheKeyPrefix = `user:${id}:loginTime`;
+
+    const loginTimeData: string =
+      await this.cacheManager.get(userCacheKeyPrefix);
+
+    console.log('sdf', loginTimeData);
+
+    return [
+      {
+        id: id,
+        loginTime: loginTimeData,
+      },
+    ];
   }
 }

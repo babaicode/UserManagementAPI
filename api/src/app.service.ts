@@ -1,4 +1,3 @@
-// src/app/app.service.ts
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
@@ -13,7 +12,6 @@ export class AppService {
       throw new Error('Cache store not available');
     }
 
-    // Retrieve keys from the underlying store
     const cacheKeys = await store.keys();
     return cacheKeys as string[];
   }
