@@ -1,7 +1,9 @@
 import { Args, Float, Query, Resolver } from '@nestjs/graphql';
 import { AuthService } from './auth/auth.service';
 import { CacheResponse } from './cache.entity';
+import { SkipThrottle } from '@nestjs/throttler';
 
+@SkipThrottle()
 @Resolver()
 export class AppResolver {
   constructor(private readonly authService: AuthService) {}

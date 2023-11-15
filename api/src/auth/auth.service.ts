@@ -27,7 +27,12 @@ export class AuthService {
     if (user && valid) {
       const { password, ...result } = user;
 
-      await this.cacheManager.set(`user:${user.id}:loginTime`, Date.now());
+      const loginTimes: number[] =
+        (await this.cacheManager.get(`user:${user.id}:loginTimes`)) || [];
+      loginTimes.push(Date.now());
+      await this.cacheManager.set(`user:${user.id}:loginTimes`, loginTimes);
+
+      // await this.cacheManager.set(`user:${user.id}:loginTime`, Date.now());
 
       return result;
     }
@@ -57,18 +62,31 @@ export class AuthService {
 
   async getUserCacheKeys(
     id: number,
-  ): Promise<{ id: number; loginTime: string }[]> {
-    const userCacheKeyPrefix = `user:${id}:loginTime`;
+  ): Promise<{ id: number; loginTimes: { [key: string]: string } }[]> {
+    const userCacheKeyPrefix = `user:${id}:loginTimes`;
 
-    const loginTimeData: string =
-      await this.cacheManager.get(userCacheKeyPrefix);
+    // Retrieve the object of login times from the cache
+    const loginTimes: { [key: string]: number } =
+      (await this.cacheManager.get(userCacheKeyPrefix)) || {};
 
-    console.log('sdf', loginTimeData);
+    // Format the login times as strings (or you can keep them as numbers)
+    const formattedLoginTimes: { [key: string]: string } = {};
+    Object.keys(loginTimes).forEach((key) => {
+      formattedLoginTimes[key] = new Date(loginTimes[key]).toLocaleTimeString(
+        'en-US',
+        {
+          hour12: false,
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        },
+      );
+    });
 
     return [
       {
         id: id,
-        loginTime: loginTimeData,
+        loginTimes: formattedLoginTimes,
       },
     ];
   }
