@@ -4,7 +4,7 @@ import { GraphQLJSONObject } from 'graphql-scalars';
 @ObjectType()
 export class CacheResponse {
   @Field()
-  id: number;
+  id: string;
   @Field(() => GraphQLJSONObject)
   loginTimes: Record<string, string>;
 }

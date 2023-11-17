@@ -1,51 +1,26 @@
 import { Injectable } from '@nestjs/common';
+import { UserRepository } from './user.repository';
+import { CreateUserDto } from './user.dto';
 import { User } from './user.entity';
 
 @Injectable()
 export class UserService {
-  private readonly users = [
-    {
-      id: 1,
-      email: 'john@mail.com',
-      userName: 'John',
-      password: 'pas1',
-      twoFactorAuthenticationSecret: null,
-      isTwoFactorAuthenticationEnabled: false,
-    },
-    {
-      id: 2,
-      email: 'maria@mail.com',
-      userName: 'Maria',
-      password: 'pas2',
-      twoFactorAuthenticationSecret: null,
-      isTwoFactorAuthenticationEnabled: false,
-    },
-  ];
+  constructor(private userRepository: UserRepository) {}
 
   async findUserByEmail(email: string) {
-    const user = this.users.find((user) => user.email === email);
+    const user = await this.userRepository.getOneByEmail(email);
+    return user;
+  }
+  async findUserById(id: string) {
+    const user = await this.userRepository.getOneById(id);
     return user;
   }
 
-  async findOneUser(username: string): Promise<User | undefined> {
-    return this.users.find((user) => user.email === username);
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
+    return this.userRepository.createOne(createUserDto);
   }
 
-  async findUserById(id: number): Promise<User | undefined> {
-    return this.users.find((user) => user.id === id);
-  }
-
-  async getAllUsers(): Promise<User[]> {
-    return this.users;
-  }
-
-  async setTwoFactorAuthenticationSecret(secret: string, id: number) {
-    this.users.find((user) => user.id === id).twoFactorAuthenticationSecret =
-      secret;
-  }
-
-  async turnOnTwoFactorAuthentication(id: number) {
-    this.users.find((user) => user.id === id).isTwoFactorAuthenticationEnabled =
-      true;
+  async getAllUsers(): Promise<User[] | []> {
+    return this.userRepository.getAllUsers();
   }
 }
