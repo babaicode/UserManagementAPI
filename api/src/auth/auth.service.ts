@@ -33,13 +33,8 @@ export class AuthService {
         isTwoFactorAuthenticationEnabled,
         ...result
       } = user as any;
+      await this.setUserCacheKeys(user._id);
 
-      const loginTimes: number[] =
-        (await this.cacheManager.get(`user:${user._id}:loginTimes`)) || [];
-      loginTimes.push(Date.now());
-      await this.cacheManager.set(`user:${user._id}:loginTimes`, loginTimes);
-
-      console.log(result._id ? result._id.toString() : 'No user ID', '++++');
       return user;
     }
     return null;
@@ -65,6 +60,13 @@ export class AuthService {
     };
 
     return result;
+  }
+
+  private async setUserCacheKeys(id: string): Promise<void> {
+    const loginTimes: number[] =
+      (await this.cacheManager.get(`user:${id}:loginTimes`)) || [];
+    loginTimes.push(Date.now());
+    await this.cacheManager.set(`user:${id}:loginTimes`, loginTimes);
   }
 
   async getUserCacheKeys(

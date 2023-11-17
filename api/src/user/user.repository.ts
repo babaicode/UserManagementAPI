@@ -13,8 +13,6 @@ export class UserRepository {
   }
 
   async getOneByEmail(email: string): Promise<User | null> {
-    const usr = await this.userModel.findOne({ email }).exec();
-    console.log(usr._id.toString());
     return await this.userModel.findOne({ email }).exec();
   }
 

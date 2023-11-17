@@ -18,8 +18,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       playground: true,
-      // autoSchemaFile: 'schema.gql',
-      autoSchemaFile: true,
+      autoSchemaFile: 'schema.gql',
       context: ({ req, res }) => ({ req, res }),
     }),
     AuthModule,
@@ -32,9 +31,8 @@ import { MongooseModule } from '@nestjs/mongoose';
     ]),
     CacheModule.register({
       ttl: 100000,
-      max: 1000,
       isGlobal: true,
-      store: 'redis',
+      max: 1000,
     }),
     AuthModule,
     MongooseModule.forRoot(
