@@ -27,14 +27,7 @@ export class AuthService {
     const valid = password === user.password;
 
     if (user && valid) {
-      const {
-        password,
-        twoFactorAuthenticationSecret,
-        isTwoFactorAuthenticationEnabled,
-        ...result
-      } = user as any;
       await this.setUserCacheKeys(user._id);
-
       return user;
     }
     return null;
@@ -60,6 +53,23 @@ export class AuthService {
     };
 
     return result;
+  }
+
+  async signup(signupInput: SignupInput): Promise<User> {
+    const existingUser = await this.userService.findUserByEmail(
+      signupInput.email,
+    );
+    if (existingUser) {
+      throw new Error('User with this email already exists.');
+    }
+
+    const newUser = await this.userService.createUser(signupInput);
+
+    if (!newUser || !newUser._id) {
+      throw new Error('Failed to create a new user.');
+    }
+
+    return newUser;
   }
 
   private async setUserCacheKeys(id: string): Promise<void> {
@@ -96,22 +106,5 @@ export class AuthService {
         loginTimes: formattedLoginTimes,
       },
     ];
-  }
-
-  async signup(signupInput: SignupInput): Promise<User> {
-    const existingUser = await this.userService.findUserByEmail(
-      signupInput.email,
-    );
-    if (existingUser) {
-      throw new Error('User with this email already exists.');
-    }
-
-    const newUser = await this.userService.createUser(signupInput);
-
-    if (!newUser || !newUser._id) {
-      throw new Error('Failed to create a new user.');
-    }
-
-    return newUser;
   }
 }

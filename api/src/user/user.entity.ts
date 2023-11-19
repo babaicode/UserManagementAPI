@@ -6,7 +6,6 @@ import { Document } from 'mongoose';
 @Schema()
 export class User {
   @Field(() => ID)
-  // @Prop({ required: true })
   _id: string;
 
   @Field()
