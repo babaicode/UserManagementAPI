@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { User } from 'src/user/entities/user.entity';
+import { User } from 'src/user/dto/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { LoginInput } from './dto/login-input';
 import { UserService } from 'src/user/user.service';
@@ -7,6 +7,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { SignupInput } from './dto/signup-input.dto';
 import { LoginResponse } from './dto/auth-response';
+import { LogsRepository } from 'src/logs/logs.repository';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,7 @@ export class AuthService {
     private userService: UserService,
     private jwtService: JwtService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+    private logsRepository: LogsRepository,
   ) {}
 
   async validateCredentials(
@@ -34,6 +36,10 @@ export class AuthService {
   }
 
   async signIn(userLogin: LoginInput) {
+    if (userLogin.password.length < 4) {
+      throw new Error('Password must be at least 4 characters long.');
+    }
+
     const user = await this.validateCredentials(
       userLogin.email,
       userLogin.password,
@@ -52,7 +58,7 @@ export class AuthService {
       user,
     };
 
-    await this.userService.saveLoginToDb(user._id);
+    await this.logsRepository.saveLoginToDb(user._id);
 
     return result;
   }

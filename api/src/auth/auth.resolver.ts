@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { LoginResponse } from './dto/auth-response';
 import { LoginInput } from './dto/login-input';
 import { SignupInput } from './dto/signup-input.dto';
-import { User } from 'src/user/entities/user.entity';
+import { User } from 'src/user/dto/user.entity';
 
 @Resolver()
 export class AuthResolver {
@@ -11,9 +11,6 @@ export class AuthResolver {
 
   @Mutation(() => LoginResponse)
   async login(@Args('loginInput') loginInput: LoginInput) {
-    if (loginInput.password.length < 4) {
-      throw new Error('Password must be at least 4 characters long.');
-    }
     return await this.authService.signIn(loginInput);
   }
 

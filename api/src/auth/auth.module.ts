@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { AuthResolver } from './auth.resolver';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
@@ -8,6 +8,7 @@ import { AuthService } from './auth.service';
 import { UserModule } from 'src/user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { jwtConfig } from 'src/config/jwt.config';
+import { LogsModule } from 'src/logs/logs.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { jwtConfig } from 'src/config/jwt.config';
     UserModule,
     JwtModule.registerAsync(jwtConfig),
     ConfigModule.forRoot({ isGlobal: true }),
+    forwardRef(() => LogsModule),
   ],
   providers: [
     AuthService,

@@ -12,7 +12,8 @@ import { GqlThrottlerGuard } from './guards/GqlThrottlerGuard';
 import { CacheModule } from '@nestjs/cache-manager';
 import { MongooseModule } from '@nestjs/mongoose';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { UserLogs } from './user/entities/userLog.entity';
+import { UserLogs } from './logs/dto/userLog.entity';
+import { LogsModule } from './logs/logs.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { UserLogs } from './user/entities/userLog.entity';
       autoLoadModels: true,
       synchronize: true,
     }),
+    LogsModule,
   ],
   providers: [
     AppService,

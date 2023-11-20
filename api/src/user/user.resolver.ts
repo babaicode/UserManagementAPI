@@ -1,6 +1,6 @@
 import { Query, Resolver } from '@nestjs/graphql';
 import { UserService } from './user.service';
-import { User } from './entities/user.entity';
+import { User } from './dto/user.entity';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/dto/jwt-auth.guard';
 import { SkipThrottle } from '@nestjs/throttler';
