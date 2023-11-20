@@ -46,7 +46,7 @@ describe('Auth Service Tests', () => {
       const mockUser = {
         id: 1,
         email: 'test@example.com',
-        userName: 'test',
+        name: 'test',
         password: 'password123',
       };
 
@@ -60,7 +60,7 @@ describe('Auth Service Tests', () => {
       expect(result).toEqual({
         id: 1,
         email: 'test@example.com',
-        userName: 'test',
+        name: 'test',
       });
     });
 
@@ -109,7 +109,7 @@ describe('Auth Service Tests', () => {
 
       const result = await authService.signIn({
         email: 'test@example.com',
-        userName: 'test',
+        name: 'test',
         password: 'password123',
       });
 
@@ -128,7 +128,7 @@ describe('Auth Service Tests', () => {
       try {
         await authService.signIn({
           email: 'nonexistent@example.com',
-          userName: 'nonexistent',
+          name: 'nonexistent',
           password: 'wrongpassword',
         });
       } catch (error) {

@@ -3,7 +3,7 @@ import { InputType, Field } from '@nestjs/graphql';
 @InputType()
 export class CreateUserDto {
   @Field()
-  userName: string;
+  name: string;
 
   @Field()
   email: string;
@@ -13,6 +13,6 @@ export class CreateUserDto {
 }
 
 export class UpdateUserDto {
-  userName?: string;
+  name?: string;
   email?: string;
 }

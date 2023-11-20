@@ -11,6 +11,9 @@ import { APP_GUARD } from '@nestjs/core';
 import { GqlThrottlerGuard } from './guards/GqlThrottlerGuard';
 import { CacheModule } from '@nestjs/cache-manager';
 import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
+// import { MySQLdbConfig } from './config/orm.config';
+// const MySQLdbConfig = require('../src/config/orm.config');
 
 @Module({
   imports: [
@@ -38,6 +41,18 @@ import { MongooseModule } from '@nestjs/mongoose';
     MongooseModule.forRoot(
       `mongodb://admin:root@mongodb:27017/shop?serverSelectionTimeoutMS=2000&authSource=admin`,
     ),
+    TypeOrmModule.forRootAsync({
+      useFactory: () => ({
+        type: 'mysql',
+        host: 'mysql',
+        port: parseInt(process.env.MySQL_DB_PORT) || 3306,
+        username: process.env.MySQL_DB_USERNAME,
+        password: process.env.MySQL_DB_PASSWORD,
+        database: process.env.MySQL_DB_NAME,
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        synchronize: false,
+      }),
+    }),
   ],
   providers: [
     AppService,

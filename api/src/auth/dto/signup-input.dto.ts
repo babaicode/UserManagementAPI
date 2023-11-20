@@ -6,7 +6,7 @@ export class SignupInput {
   email: string;
 
   @Field()
-  userName: string;
+  name: string;
 
   @Field()
   password: string;

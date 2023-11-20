@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { User } from 'src/user/user.entity';
+import { User } from 'src/user/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { LoginInput } from './dto/login-input';
 import { UserService } from 'src/user/user.service';
@@ -51,6 +51,8 @@ export class AuthService {
       ),
       user,
     };
+
+    await this.userService.saveLoginToDb(user._id);
 
     return result;
   }

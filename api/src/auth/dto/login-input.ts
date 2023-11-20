@@ -9,5 +9,5 @@ export class LoginInput {
   email: string;
 
   @Field()
-  userName: string;
+  name: string;
 }

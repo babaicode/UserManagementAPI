@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { LoginResponse } from './dto/auth-response';
 import { LoginInput } from './dto/login-input';
 import { SignupInput } from './dto/signup-input.dto';
-import { User } from 'src/user/user.entity';
+import { User } from 'src/user/entities/user.entity';
 
 @Resolver()
 export class AuthResolver {

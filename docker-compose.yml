@@ -13,10 +13,12 @@ services:
       - "3000:3000"
     links:
       - redis
+      - adminer
     networks:
       - rand-network
     depends_on:
       - mongodb
+      - mysql
 
   redis:
     image: redis:6.2.4-alpine
@@ -43,5 +45,23 @@ services:
       retries: 3
     restart: unless-stopped
 
+  mysql:
+    platform: linux/x86_64
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=mysqldb
+    volumes:
+      - ./mysql:/var/lib/mysql
+    networks:
+      - rand-network
+
+  adminer:
+    image: arm64v8/adminer
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - "8081:8080"
 networks:
   rand-network:

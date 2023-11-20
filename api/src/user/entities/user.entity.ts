@@ -14,7 +14,7 @@ export class User {
 
   @Field()
   @Prop({ required: true })
-  userName: string;
+  name: string;
 
   @HideField()
   @Prop()

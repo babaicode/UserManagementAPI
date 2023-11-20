@@ -9,5 +9,5 @@ export class UserToReturn {
   email: string;
 
   @Field()
-  userName: string;
+  name: string;
 }
