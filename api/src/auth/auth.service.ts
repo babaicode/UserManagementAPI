@@ -75,38 +75,27 @@ export class AuthService {
   }
 
   private async setUserCacheKeys(id: string): Promise<void> {
-    const loginTimes: number[] =
+    const loginTimes: string[] =
       (await this.cacheManager.get(`user:${id}:loginTimes`)) || [];
-    loginTimes.push(Date.now());
+    loginTimes.push(new Date().toISOString());
     await this.cacheManager.set(`user:${id}:loginTimes`, loginTimes);
   }
 
   async getUserCacheKeys(
     id: string,
-  ): Promise<{ id: string; loginTimes: { [key: string]: string } }[]> {
+  ): Promise<{ id: string; loginTimes: string[] }> {
     const userCacheKeyPrefix = `user:${id}:loginTimes`;
 
-    const loginTimes: { [key: string]: number } =
-      (await this.cacheManager.get(userCacheKeyPrefix)) || {};
+    const loginTimes: string[] =
+      (await this.cacheManager.get(userCacheKeyPrefix)) || [];
 
-    const formattedLoginTimes: { [key: string]: string } = {};
-    Object.keys(loginTimes).forEach((key) => {
-      formattedLoginTimes[key] = new Date(loginTimes[key]).toLocaleTimeString(
-        'en-US',
-        {
-          hour12: false,
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-        },
-      );
-    });
+    const formattedLoginTimes: string[] = loginTimes.map((time) =>
+      time.toString(),
+    );
 
-    return [
-      {
-        id: id,
-        loginTimes: formattedLoginTimes,
-      },
-    ];
+    return {
+      id: id,
+      loginTimes: formattedLoginTimes,
+    };
   }
 }

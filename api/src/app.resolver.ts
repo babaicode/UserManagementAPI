@@ -8,10 +8,10 @@ import { SkipThrottle } from '@nestjs/throttler';
 export class AppResolver {
   constructor(private readonly authService: AuthService) {}
 
-  @Query(() => [CacheResponse])
+  @Query(() => CacheResponse)
   async getUserCacheKeys(
     @Args('id', { type: () => String }) id: string,
-  ): Promise<CacheResponse[]> {
+  ): Promise<CacheResponse> {
     return this.authService.getUserCacheKeys(id);
   }
 }

@@ -1,16 +1,25 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Model,
+  Table,
+  PrimaryKey,
+  AutoIncrement,
+  DataType,
+} from 'sequelize-typescript';
 
-@Entity('UserLogs')
-export class UserLogs {
-  @PrimaryGeneratedColumn()
+@Table({ tableName: 'UserLogs' })
+export class UserLogs extends Model {
+  @PrimaryKey
+  @AutoIncrement
+  @Column
   id: number;
 
-  @Column()
+  @Column
   userId: string;
 
-  @Column()
-  loginTime: string;
+  @Column(DataType.DATE)
+  loginTime: Date;
 
-  @Column()
-  mostFrequentTime: string;
+  @Column({ allowNull: true })
+  mostFrequentTime?: string;
 }

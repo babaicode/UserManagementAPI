@@ -3,9 +3,8 @@ import { UserRepository } from './user.repository';
 import { CreateUserDto } from './user.dto';
 import { User } from './entities/user.entity';
 import { AuthService } from 'src/auth/auth.service';
-import { Repository } from 'typeorm';
 import { UserLogs } from './entities/userLog.entity';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectModel } from '@nestjs/sequelize';
 
 @Injectable()
 export class UserService {
@@ -13,8 +12,8 @@ export class UserService {
     private userRepository: UserRepository,
     @Inject(forwardRef(() => AuthService))
     private authService: AuthService,
-    @InjectRepository(UserLogs)
-    private mySQLRepository: Repository<UserLogs>,
+    @InjectModel(UserLogs)
+    private userLogsModel: typeof UserLogs,
   ) {}
 
   async findUserByEmail(email: string) {
@@ -35,17 +34,17 @@ export class UserService {
   }
 
   async saveLoginToDb(id: string) {
-    const loginsById = (await this.authService.getUserCacheKeys(id)).flatMap(
-      (item) => Object.values(item.loginTimes),
-    );
-    for (const loginTime of loginsById) {
-      const loginEntry = this.mySQLRepository.create({
-        userId: id,
-        loginTime: loginTime,
-        mostFrequentTime: '',
-      });
+    const { loginTimes } = await this.authService.getUserCacheKeys(id);
+    const lastLoginTime = loginTimes[loginTimes.length - 1];
 
-      await this.mySQLRepository.save(loginEntry);
+    const loginTime = new Date(lastLoginTime);
+    if (isNaN(loginTime.getTime())) {
+      throw new Error(`Invalid date: ${lastLoginTime}`);
     }
+
+    await this.userLogsModel.create({
+      userId: id.toString(),
+      loginTime: loginTime,
+    });
   }
 }

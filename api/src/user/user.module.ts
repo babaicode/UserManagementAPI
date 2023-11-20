@@ -5,18 +5,16 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserRepository } from './user.repository';
 import { User, UserSchema } from './entities/user.entity';
 import { UserLogs } from './entities/userLog.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
-import { Repository } from 'typeorm';
+import { SequelizeModule } from '@nestjs/sequelize';
 
 @Module({
   imports: [
     forwardRef(() => AuthModule),
-    forwardRef(() => Repository),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    TypeOrmModule.forFeature([UserLogs]),
+    SequelizeModule.forFeature([UserLogs]),
   ],
   providers: [UserService, UserResolver, UserRepository],
-  exports: [UserService],
+  exports: [UserService, SequelizeModule],
 })
 export class UserModule {}
