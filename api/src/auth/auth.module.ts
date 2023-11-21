@@ -9,6 +9,7 @@ import { UserModule } from 'src/user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { jwtConfig } from 'src/config/jwt.config';
 import { LogsModule } from 'src/logs/logs.module';
+import { RolesModule } from 'src/roles/roles.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { LogsModule } from 'src/logs/logs.module';
     JwtModule.registerAsync(jwtConfig),
     ConfigModule.forRoot({ isGlobal: true }),
     forwardRef(() => LogsModule),
+    forwardRef(() => RolesModule),
   ],
   providers: [
     AuthService,

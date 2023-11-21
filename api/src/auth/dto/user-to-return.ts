@@ -1,4 +1,5 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { Role } from 'src/roles/dto/role.entity';
 
 @ObjectType()
 export class UserToReturn {
@@ -10,4 +11,7 @@ export class UserToReturn {
 
   @Field()
   name: string;
+
+  @Field(() => [Role])
+  roles: Role[];
 }

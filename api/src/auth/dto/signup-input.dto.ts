@@ -10,4 +10,7 @@ export class SignupInput {
 
   @Field()
   password: string;
+
+  @Field()
+  role: string;
 }

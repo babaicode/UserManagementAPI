@@ -1,6 +1,7 @@
 import { ObjectType, Field, ID, HideField } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Role } from 'src/roles/dto/role.entity';
 
 @ObjectType()
 @Schema()
@@ -27,6 +28,10 @@ export class User {
   @HideField()
   @Prop({ required: true })
   password: string;
+
+  @Field(() => [Role])
+  @Prop({ type: [Role] })
+  roles: Role[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

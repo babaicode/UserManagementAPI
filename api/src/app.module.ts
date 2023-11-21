@@ -14,6 +14,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { UserLogs } from './logs/dto/userLog.entity';
 import { LogsModule } from './logs/logs.module';
+import { RolesModule } from './roles/roles.module';
+import { RolesSeeder } from './roles/roles.seeder';
 
 @Module({
   imports: [
@@ -24,8 +26,6 @@ import { LogsModule } from './logs/logs.module';
       autoSchemaFile: 'schema.gql',
       context: ({ req, res }) => ({ req, res }),
     }),
-    AuthModule,
-    UserModule,
     ThrottlerModule.forRoot([
       {
         ttl: 10000,
@@ -37,7 +37,6 @@ import { LogsModule } from './logs/logs.module';
       isGlobal: true,
       max: 1000,
     }),
-    AuthModule,
     MongooseModule.forRoot(
       `mongodb://admin:root@mongodb:27017/shop?serverSelectionTimeoutMS=2000&authSource=admin`,
     ),
@@ -52,7 +51,10 @@ import { LogsModule } from './logs/logs.module';
       autoLoadModels: true,
       synchronize: true,
     }),
+    UserModule,
+    AuthModule,
     LogsModule,
+    RolesModule,
   ],
   providers: [
     AppService,
@@ -61,6 +63,13 @@ import { LogsModule } from './logs/logs.module';
       provide: APP_GUARD,
       useClass: GqlThrottlerGuard,
     },
+    RolesSeeder,
   ],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private readonly rolesSeeder: RolesSeeder) {}
+
+  async onModuleInit() {
+    await this.rolesSeeder.seed();
+  }
+}

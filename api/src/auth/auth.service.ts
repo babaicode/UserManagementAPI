@@ -8,6 +8,7 @@ import { Cache } from 'cache-manager';
 import { SignupInput } from './dto/signup-input.dto';
 import { LoginResponse } from './dto/auth-response';
 import { LogsRepository } from 'src/logs/logs.repository';
+import { RolesService } from 'src/roles/roles.service';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +17,7 @@ export class AuthService {
     private jwtService: JwtService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
     private logsRepository: LogsRepository,
+    private rolesService: RolesService,
   ) {}
 
   async validateCredentials(
@@ -71,7 +73,17 @@ export class AuthService {
       throw new Error('User with this email already exists.');
     }
 
-    const newUser = await this.userService.createUser(signupInput);
+    if (!['user', 'admin'].includes(signupInput.role)) {
+      throw new Error('Invalid role. Role must be either "user" or "admin".');
+    }
+
+    const role = await this.rolesService.findRoleByValue(signupInput.role);
+    if (!role) throw new Error('Role does not exist.');
+
+    const newUser = await this.userService.createUser({
+      ...signupInput,
+      roles: [role],
+    });
 
     if (!newUser || !newUser._id) {
       throw new Error('Failed to create a new user.');
