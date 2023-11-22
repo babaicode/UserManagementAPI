@@ -65,7 +65,7 @@ export class AuthService {
     return result;
   }
 
-  async signup(signupInput: SignupInput): Promise<User> {
+  async signUp(signupInput: SignupInput): Promise<User> {
     const existingUser = await this.userService.findUserByEmail(
       signupInput.email,
     );

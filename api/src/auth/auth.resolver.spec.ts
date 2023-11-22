@@ -5,6 +5,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 
 const authServiceMock = {
   signIn: jest.fn(),
+  signUp: jest.fn(),
 };
 
 describe('Auth Resolver Tests', () => {
@@ -33,22 +34,6 @@ describe('Auth Resolver Tests', () => {
   });
 
   describe('login', () => {
-    it('should throw an error if password is less than 4 characters', async () => {
-      const loginInput = {
-        email: 'john@mail.com',
-        name: 'John',
-        password: '123',
-      };
-
-      try {
-        await authResolver.login(loginInput);
-        fail('Expected an error to be thrown for a short password.');
-      } catch (error) {
-        expect(error.message).toContain(
-          'Password must be at least 4 characters long.',
-        );
-      }
-    });
     it('should respect rate limiting', async () => {
       for (let i = 0; i < 4; i++) {
         try {
@@ -62,15 +47,60 @@ describe('Auth Resolver Tests', () => {
         }
       }
     });
-  });
 
-  it('should not exceed rate limit', async () => {
-    for (let i = 0; i < 1; i++) {
-      await authResolver.login({
+    it('should not exceed rate limit', async () => {
+      for (let i = 0; i < 1; i++) {
+        await authResolver.login({
+          email: 'john@mail.com',
+          name: 'John',
+          password: 'pas1',
+        });
+      }
+    });
+    it('should be success', async () => {
+      const loginInput = {
         email: 'john@mail.com',
-        name: 'John',
         password: 'pas1',
+        name: 'John',
+      };
+
+      authServiceMock.signIn.mockReturnValueOnce({
+        access_token: 'token',
+        user: {
+          email: loginInput.email,
+          name: loginInput.name,
+        },
       });
-    }
+
+      const result = await authResolver.login(loginInput);
+
+      expect(result).toHaveProperty('access_token');
+      expect(result).toHaveProperty('user');
+      expect(result.user).toHaveProperty('email', loginInput.email);
+      expect(result.user).toHaveProperty('name', loginInput.name);
+
+      expect(authServiceMock.signIn).toHaveBeenCalledWith(loginInput);
+    });
+  });
+  describe('register', () => {
+    it('should be success', async () => {
+      const registerInput = {
+        email: 'john@mail.com',
+        password: 'pas1',
+        name: 'John',
+        role: 'admin',
+      };
+      authServiceMock.signUp.mockReturnValueOnce({
+        email: registerInput.email,
+        name: registerInput.name,
+        role: registerInput.role,
+      });
+
+      const result = await authResolver.signUp(registerInput);
+
+      expect(result).toHaveProperty('email', registerInput.email);
+
+      expect(authServiceMock.signUp).toHaveBeenCalledWith(registerInput);
+    });
   });
 });

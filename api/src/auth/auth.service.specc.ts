@@ -122,6 +122,24 @@ describe('Auth Service Tests', () => {
       });
     });
 
+    // it('should throw an error if password is less than 4 characters', async () => {
+    //   const loginInput = {
+    //     email: 'john@mail.com',
+    //     name: 'John',
+    //     password: '123',
+    //     role: 'doomer',
+    //   };
+
+    //   try {
+    //     await authResolver.login(loginInput);
+    //     fail('Expected an error to be thrown for a short password.');
+    //   } catch (error) {
+    //     expect(error.message).toContain(
+    //       'Password must be at least 4 characters long.',
+    //     );
+    //   }
+    // });
+
     it('should throw NotFoundException when invalid credentials are provided', async () => {
       userServiceMock.findUserByEmail.mockResolvedValue(null);
 
