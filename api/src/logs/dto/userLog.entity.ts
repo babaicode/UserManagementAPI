@@ -24,8 +24,4 @@ export class UserLogs extends Model {
   @Column(DataType.DATE)
   @Field()
   loginTime: Date;
-
-  @Column({ allowNull: true })
-  @Field({ nullable: true })
-  mostFrequentTime?: string;
 }
