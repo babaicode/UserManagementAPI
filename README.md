@@ -23,6 +23,8 @@ This API application provides various functions aimed at improving knowledge and
 ## How to Run
 
 To run the application, use Docker Compose:
+```bash
+docker-compose up
 
 ## How to Try Using GraphQL Playground
 
@@ -78,7 +80,3 @@ query GetMostFrequentLoginTime {
     mostFrequentTime
   }
 }
-
-
-```bash
-docker-compose up
