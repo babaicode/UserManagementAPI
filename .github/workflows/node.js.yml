@@ -34,6 +34,7 @@ jobs:
         working-directory: ./api
       - name: ESLint Check
         run: npm run lint
+        working-directory: ./api
       - name: Build and Test
         run: npm run build && npm run test
         working-directory: ./api
