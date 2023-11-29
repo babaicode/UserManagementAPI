@@ -19,6 +19,8 @@ This API application provides various functions aimed at improving knowledge and
 
 - Administrators have the ability to view data regarding the most regular times when users use the application.
 
+## It also has github actions.
+
 ## How to Run
 
 To run the application, use Docker Compose:
