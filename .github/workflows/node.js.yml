@@ -25,9 +25,13 @@ jobs:
       - name: Clear npm cache
         run: npm cache clean --force
       - name: Install dependencies
-        run: npm ci --no-optional
+        run: |
+          if [ "$RUNNER_OS" != "MacOS" ]; then
+            npm ci --no-optional
+          else
+            npm ci
+          fi
         working-directory: ./api
       - name: Build and Test
         run: npm run build && npm run test
         working-directory: ./api
-        
